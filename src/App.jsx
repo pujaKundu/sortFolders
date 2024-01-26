@@ -3,9 +3,12 @@ import makeSortableComponents from "./components/makeSortableComponents";
 
 function App() {
   const componentList = [
-    <div key={1}>Component 1</div>,
-    <div key={2}>Component 2</div>,
-    <div key={3}>Component 3</div>,
+    { id: 1, content: 'Component 1', bgColor: '#ffcc00' },
+    { id: 2, content: 'Component 2', bgColor: '#66ccff' },
+    { id: 3, content: 'Component 3', bgColor: '#ff6666' },
+    { id: 4, content: 'Component 4', bgColor: '#aacd70' },
+    { id: 5, content: 'Component 5', bgColor: '#1a1a1a' },
+    { id: 6, content: 'Component 6', bgColor: '#ff699e' },
   ];
 
   const SortableList = makeSortableComponents(componentList); 
