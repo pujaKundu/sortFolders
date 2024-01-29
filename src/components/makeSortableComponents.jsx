@@ -4,40 +4,36 @@ const makeSortableComponents = (componentList) => {
   const SortableList = () => {
     const [components, setComponents] = useState(componentList);
     const [draggedIndex, setDraggedIndex] = useState(null);
-    const [targetIndex,setTargetIndex]=useState(null);
-    const [isDragging,setIsDragging]=useState(false);
+    const [targetIndex, setTargetIndex] = useState(null);
+    const [isDragging,setIsDragging]=useState(false)
 
-    console.log('target',targetIndex);
-    console.log('init',draggedIndex)
-
-    const handleDragStart = (index) => (e) => {
-      e.dataTransfer.setData("text/plain", index.toString());
+    const handleDragStart = (index) => {
       setDraggedIndex(index);
-      setIsDragging(true);
     };
 
-    const handleDragOver =  (e) => {
+    const handleDragOver = (e, index) => {
       e.preventDefault();
-      
+      setTargetIndex(index);
     };
 
-    const handleDrop=(e,index)=>{
-      const dragIndex = parseInt(e.dataTransfer.getData("text/plain"), 10);
+    const handleDragLeave = () => {
+      setTargetIndex(null);
+    };
 
-      if (dragIndex !== index && targetIndex!==index) {
-        setTargetIndex(index)
+    const handleDrop = () => {
+      if (draggedIndex !== null && targetIndex !== null && draggedIndex !== targetIndex) {
         const updatedComponents = [...components];
-        const [draggedComponent] = updatedComponents.splice(dragIndex, 1);
-        updatedComponents.splice(index, 0, draggedComponent);
+        const [draggedComponent] = updatedComponents.splice(draggedIndex, 1);
+        updatedComponents.splice(targetIndex, 0, draggedComponent);
         setComponents(updatedComponents);
-        setDraggedIndex(index);
+        setDraggedIndex(null);
+        setTargetIndex(null);
       }
-    }
+    };
 
     const handleDragEnd = () => {
       setDraggedIndex(null);
       setTargetIndex(null);
-      setIsDragging(false);
     };
 
     const renderComponentWithDragHandlers = (component, index) => {
@@ -46,24 +42,18 @@ const makeSortableComponents = (componentList) => {
           className="sortable-item"
           key={index}
           style={{
-            // backgroundColor: index === draggedIndex?
-            //    `${component.bgColor}`:"blue",
-            border: draggedIndex === index ? "2px solid #000" : "none",
-            // transform:  draggedIndex === index ? "scale(1.1)":""
+            backgroundColor: `${component.bgColor}`,
+            border: targetIndex === index ? "2px dashed #000" : "none",
           }}
-          draggable
+           
+          onDragStart={() => handleDragStart(index)}
+          onDragOver={(e) => handleDragOver(e, index)}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onDragEnd={handleDragEnd}
         >
-          <div
-            className={`sortable-item ${
-              draggedIndex === index ? "dragged" : ""
-            }`}
-            onDragStart={handleDragStart(index)}
-            onDragOver={(e)=>handleDragOver(e)}
-            onDragEnd={handleDragEnd}
-            onDrop={(e)=>handleDrop(e,index)}
-          >
+          <div className={`sortable-item `} draggable>
             <div className="drag-icon">&#x2630;</div>
-            
           </div>
           <div className="content">{component.content}</div>
         </div>
@@ -71,10 +61,8 @@ const makeSortableComponents = (componentList) => {
     };
 
     return (
-      <div>
-        {components.map((component, index) =>
-          renderComponentWithDragHandlers(component, index)
-        )}
+      <div onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
+        {components.map((component, index) => renderComponentWithDragHandlers(component, index))}
       </div>
     );
   };

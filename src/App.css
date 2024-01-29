@@ -6,9 +6,9 @@
 }
 
 .sortable-item{
-  background-color: rgb(250, 128, 84);
+  /* background-color: rgb(250, 128, 84); */
   color: #ffffff;
-  margin: 5px;
+  margin: 15px;
   padding:10px 5px;
   display: flex;
   align-items: center;
