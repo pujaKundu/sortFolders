@@ -47,10 +47,22 @@ const makeSortableComponents = (componentList) => {
     };
 
     const handleDrop = () => {
-      if (draggedIndex !== null && targetIndex !== null && draggedIndex !== targetIndex) {
+    console.log('isOverLowerHalf', isOverLowerHalf)
+      console.log('targetIndex', targetIndex)
+
+      let dropIndex = targetIndex;
+      if(isOverLowerHalf){
+        dropIndex+=1;
+      }
+      else{
+        dropIndex= dropIndex;
+      }
+
+
+      if (draggedIndex !== null && dropIndex !== null && draggedIndex !== dropIndex) {
         const updatedComponents = [...components];
         const [draggedComponent] = updatedComponents.splice(draggedIndex, 1);
-        updatedComponents.splice(targetIndex, 0, draggedComponent);
+        updatedComponents.splice(dropIndex, 0, draggedComponent);
         setComponents(updatedComponents);
         setDraggedIndex(null);
         setTargetIndex(null);

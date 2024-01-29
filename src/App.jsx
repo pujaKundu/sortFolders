@@ -10,6 +10,8 @@ function App() {
     // { id: 5, content: 'Component 5', bgColor: '#1a1a1a' },
   ];
 
+  // let items = componentList.map((v)=> <Item text={v.content}/>);
+
   const SortableList = makeSortableComponents(componentList); 
 
   return (
