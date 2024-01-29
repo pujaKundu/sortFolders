@@ -7,6 +7,10 @@ const makeSortableComponents = (componentList) => {
     const [targetIndex, setTargetIndex] = useState(null);
     const [isDragging,setIsDragging]=useState(false)
 
+    const handleMouseDown = ()=>{
+      setIsDragging(true)
+    }
+
     const handleDragStart = (index) => {
       setDraggedIndex(index);
     };
@@ -28,6 +32,7 @@ const makeSortableComponents = (componentList) => {
         setComponents(updatedComponents);
         setDraggedIndex(null);
         setTargetIndex(null);
+        setIsDragging(false);
       }
     };
 
@@ -45,14 +50,14 @@ const makeSortableComponents = (componentList) => {
             backgroundColor: `${component.bgColor}`,
             border: targetIndex === index ? "2px dashed #000" : "none",
           }}
-           
+          draggable={isDragging}
           onDragStart={() => handleDragStart(index)}
           onDragOver={(e) => handleDragOver(e, index)}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
         >
-          <div className={`sortable-item `} draggable>
+          <div className={`sortable-item `} onMouseDown={handleMouseDown} >
             <div className="drag-icon">&#x2630;</div>
           </div>
           <div className="content">{component.content}</div>
