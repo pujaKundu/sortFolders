@@ -1,23 +1,33 @@
-import './App.css';
-import makeSortableComponents from "./components/makeSortableComponents";
+import { useState } from "react";
+import "./App.css";
+import dataList from "./constants/data";
+import MakeSortable from "./components/MakeSortable";
+import Item from "./components/Item";
 
 function App() {
-  const componentList = [
-    { id: 1, content: 'Component 1', bgColor: 'coral' },
-    { id: 2, content: 'Component 2', bgColor: '#66ccff' },
-    { id: 3, content: 'Component 3', bgColor: '#ff6666' },
-    { id: 4, content: 'Component 4', bgColor: '#aacd70' },
-    // { id: 5, content: 'Component 5', bgColor: '#1a1a1a' },
-  ];
+  const [isDragging, setIsDragging] = useState(false);
 
-  // let items = componentList.map((v)=> <Item text={v.content}/>);
+  const components = dataList.map((component) => (
+    <Item
+      key={component?.id}
+      component={component}
+      setIsDragging={setIsDragging}
+    />
+  ));
 
-  const SortableList = makeSortableComponents(componentList); 
+  const [componentList, setComponentList] = useState(components);
 
   return (
     <>
-     <h2>Sortable components</h2>
-     <SortableList />
+      <h2>Sortable components</h2>
+      <MakeSortable
+        componentList={componentList}
+        onSort={(componentList) => setComponentList(componentList)}
+        isDragging={isDragging}
+        setIsDragging={setIsDragging}
+      >
+        {componentList}
+      </MakeSortable>
     </>
   );
 }
