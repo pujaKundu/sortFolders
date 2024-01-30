@@ -1,7 +1,7 @@
 import React from "react";
 
 const Item = ({ component, setIsDragging }) => {
-  
+
   const handleMouseDown = () => {
     setIsDragging(true);
   };

@@ -7,9 +7,11 @@ const MakeSortable = ({ componentList, onSort,isDragging,setIsDragging, children
   const [isOverUpperHalf, setIsOverUpperHalf] = useState(false);
   const [isOverLowerHalf, setIsOverLowerHalf] = useState(false);
 
-  const handleDragStart = (e, index) => {
+//   console.log(componentList)
+  const handleDragStart = (e,index) => {
     setDraggedIndex(index);
     setIsDragging(true);
+    e.dataTransfer.setData("text/plain", index);
   };
 
   const handleDragOver = (e, index) => {
@@ -43,12 +45,35 @@ const MakeSortable = ({ componentList, onSort,isDragging,setIsDragging, children
         isTarget && isOverLowerHalf ? "3px dashed blue" : "none";
     }
   };
-
+  
   const handleDragDrop = (e, index) => {
-    e.preventDefault();
-    let dropIndex = targetIndex;
 
-    isOverLowerHalf ? (dropIndex += 1) : dropIndex;
+    const dragPoint =parseInt(e.dataTransfer.getData("text/plain"), 10);
+    e.preventDefault();
+
+    let dropIndex = targetIndex;
+ 
+    if(isOverUpperHalf && !isOverLowerHalf){
+        const updatedComponents = [...componentList];
+       
+        if(dropIndex-dragPoint<0){
+            [updatedComponents[dropIndex-1], updatedComponents[dropIndex]] = [updatedComponents[dropIndex], updatedComponents[dropIndex-1]];
+        }
+        if(dropIndex-dragPoint>0){    
+            dropIndex = dropIndex-1;
+        }
+    }
+
+    if (isOverLowerHalf && !isOverUpperHalf) {
+        const updatedComponents = [...componentList];
+        
+        if(dropIndex-dragPoint<0){
+            dropIndex = dropIndex+1;
+        }
+        if(dropIndex-dragPoint>0){    
+            [updatedComponents[dropIndex], updatedComponents[dropIndex+1]] = [updatedComponents[dropIndex+1], updatedComponents[dropIndex]];
+        }
+    }
 
     if (
       draggedIndex !== null &&
@@ -56,9 +81,14 @@ const MakeSortable = ({ componentList, onSort,isDragging,setIsDragging, children
       draggedIndex !== dropIndex
     ) {
       const updatedComponents = [...componentList];
+
       const [draggedComponent] = updatedComponents.splice(draggedIndex, 1);
+      
       updatedComponents.splice(dropIndex, 0, draggedComponent);
+
+
       onSort(updatedComponents);
+
       setDraggedIndex(null);
       setTargetIndex(null);
       setIsDragging(false);
@@ -107,7 +137,7 @@ const MakeSortable = ({ componentList, onSort,isDragging,setIsDragging, children
             isDragging && index === draggedIndex ? "dragging" : ""
           }`}
           draggable={isDragging}
-          onDragStart={(e) => handleDragStart(e, index)}
+          onDragStart={(e) => handleDragStart(e,index)}
           onDragOver={(e) => handleDragOver(e, index)}
           onDragLeave={handleDragLeave}
           onDrop={(e) => handleDragDrop(e, index)}
@@ -115,6 +145,7 @@ const MakeSortable = ({ componentList, onSort,isDragging,setIsDragging, children
         >
           {item}
         </div>
+        
       ))}
     </div>
   );
